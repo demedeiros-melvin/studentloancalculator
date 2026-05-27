@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Loan Payoff Calculator | Estimate Payoff Date and Interest</title>
+  <meta name="description" content="Use this free student loan payoff calculator to estimate your payoff date, total interest paid, and savings from making extra monthly payments.">
+  <meta property="og:title" content="Student Loan Payoff Calculator | Estimate Payoff Date and Interest">
+  <meta property="og:description" content="Use this free student loan payoff calculator to estimate your payoff date, total interest paid, and savings from making extra monthly payments.">
+  <meta property="og:type" content="website">
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #627084;
+      --line: #dce6f1;
+      --soft: #f4f8fb;
+      --card: #ffffff;
+      --blue: #1f6feb;
+      --blue-dark: #1858ba;
+      --green: #12805c;
+      --green-soft: #e7f7ef;
+      --shadow: 0 16px 45px rgba(31, 53, 84, 0.10);
+      --radius: 18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #ffffff;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      overflow: hidden;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      background:
+        radial-gradient(circle at top left, rgba(31, 111, 235, 0.13), transparent 32rem),
+        linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+      padding: 24px 0 38px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 58px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: #0e2b4c;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      box-shadow: 0 10px 24px rgba(31, 111, 235, 0.22);
+      font-weight: 900;
+    }
+
+    .trust-pill {
+      color: var(--green);
+      background: var(--green-soft);
+      border: 1px solid rgba(18, 128, 92, 0.16);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .hero {
+      max-width: 780px;
+      padding-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.35rem, 7vw, 4.85rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+      max-width: 930px;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 22px 0 30px;
+      color: var(--muted);
+      font-size: clamp(1.04rem, 2vw, 1.24rem);
+    }
+
+    .button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 15px 20px;
+      background: var(--blue);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 14px 28px rgba(31, 111, 235, 0.24);
+      transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      background: var(--blue-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 30px rgba(31, 111, 235, 0.28);
+    }
+
+    .button:focus-visible,
+    input:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid rgba(31, 111, 235, 0.28);
+      outline-offset: 3px;
+    }
+
+    .hero-note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .ad-slot {
+      width: 100%;
+      border: 1px dashed #b8c8d9;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(31, 111, 235, 0.04), rgba(18, 128, 92, 0.04)),
+        #fbfdff;
+      color: #718197;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .ad-banner {
+      min-height: 92px;
+      margin-top: 18px;
+    }
+
+    main {
+      padding: 46px 0 64px;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      align-items: stretch;
+      gap: 24px;
+    }
+
+    .calculator-card,
+    .results-panel,
+    .content-section,
+    .faq-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .calculator-card {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.88fr) minmax(320px, 1.12fr);
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .form-panel {
+      padding: 28px;
+      background: #fbfdff;
+      border-right: 1px solid var(--line);
+    }
+
+    .form-panel h2,
+    .results-panel h2,
+    .content-section h2,
+    .faq-section h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.55rem, 3vw, 2rem);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .section-intro {
+      margin: 0 0 22px;
+      color: var(--muted);
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #26364d;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #cbd8e6;
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--ink);
+      background: #ffffff;
+      font: inherit;
+      font-weight: 650;
+    }
+
+    .field input::placeholder {
+      color: #9aa7b6;
+    }
+
+    .field small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .calculate-button {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .results-panel {
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 28px;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .result-card {
+      min-height: 116px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #ffffff;
+    }
+
+    .result-card.highlight {
+      background: linear-gradient(180deg, #eef8f4, #ffffff);
+      border-color: rgba(18, 128, 92, 0.24);
+    }
+
+    .result-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .result-value {
+      display: block;
+      margin-top: 8px;
+      color: #10233d;
+      font-size: clamp(1.18rem, 2vw, 1.48rem);
+      line-height: 1.18;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .result-card.highlight .result-value {
+      color: var(--green);
+    }
+
+    .error {
+      display: none;
+      margin: 18px 0 0;
+      padding: 12px 14px;
+      border: 1px solid #f2b8b5;
+      border-radius: 12px;
+      background: #fff3f2;
+      color: #9d2420;
+      font-weight: 750;
+    }
+
+    .sidebar-ad {
+      min-height: 620px;
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+
+    .explanation {
+      margin: 28px 0 0;
+      padding: 22px 0 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .ad-after-results,
+    .ad-large,
+    .ad-footer {
+      min-height: 104px;
+      margin: 34px 0;
+    }
+
+    .content-section {
+      margin-top: 34px;
+      padding: clamp(24px, 4vw, 36px);
+      box-shadow: none;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .article-block h3 {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+      line-height: 1.2;
+    }
+
+    .article-block p,
+    .article-block li {
+      color: var(--muted);
+    }
+
+    .article-block ul {
+      margin: 12px 0 0;
+      padding-left: 20px;
+    }
+
+    .faq-section {
+      margin-top: 18px;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .faq-card {
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .faq-card summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      font-weight: 850;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .faq-card summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-card summary::after {
+      content: "+";
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--blue);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .faq-card[open] summary::after {
+      content: "-";
+    }
+
+    .faq-card p {
+      margin: 0;
+      padding: 0 20px 20px;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 36px 0 42px;
+      background: #f6fafc;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-copy {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 920px) {
+      .calculator-grid,
+      .calculator-card,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-panel {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .sidebar-ad {
+        min-height: 120px;
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        width: min(100% - 28px, 1120px);
+      }
+
+      header {
+        padding-top: 18px;
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 42px;
+      }
+
+      .trust-pill {
+        white-space: normal;
+      }
+
+      .form-panel,
+      .results-panel {
+        padding: 22px;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-card {
+        min-height: auto;
+      }
+
+      .ad-banner,
+      .ad-after-results,
+      .ad-large,
+      .ad-footer {
+        min-height: 86px;
+      }
+    }
+  </style>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I calculate my student loan payoff date?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Enter your current loan balance, annual interest rate, regular monthly payment, and any extra monthly payment. The calculator estimates how many months it may take to pay the balance to zero."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if I make extra payments?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Extra payments reduce your principal faster. That can lower the total interest you pay and move your payoff date earlier."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I pay off student loans early?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Paying early can save interest, but it depends on your interest rate, emergency savings, employer benefits, and other financial goals. Consider the full picture before changing your payment plan."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does interest affect my payoff time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Interest adds to your balance each month before your payment reduces the loan. A higher rate or a smaller payment can make payoff take longer and increase the total cost."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is refinancing student loans a good idea?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Refinancing may lower your interest rate or payment, but federal student loans can lose borrower protections if refinanced with a private lender. Compare benefits, costs, and risks carefully."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if my monthly payment is too low?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If your monthly payment does not cover the interest that accrues each month, the loan will not pay down. You may need a higher payment, a lower rate, or a different repayment plan."
+          }
+        }
+      ]
+    }
+  </script>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="wrap">
+        <nav class="nav" aria-label="Primary">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true">$</span>
+            <span>Student Loan Payoff Calculator</span>
+          </div>
+          <span class="trust-pill">Free educational estimate</span>
+        </nav>
+
+        <section class="hero" aria-labelledby="hero-title">
+          <p class="eyebrow">Student loan planning</p>
+          <h1 id="hero-title">Calculate When Your Student Loans Will Be Paid Off</h1>
+          <p class="subtitle">Estimate your payoff date, total interest, and how much faster you could become debt-free with extra monthly payments.</p>
+          <a class="button" href="#calculator">Calculate My Payoff</a>
+          <p class="hero-note">Free educational estimate. No signup required.</p>
+        </section>
+
+        <div class="ad-slot ad-banner" aria-label="Top banner advertising placeholder">Ad Slot</div>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap">
+        <section id="calculator" class="calculator-grid" aria-labelledby="calculator-title">
+          <div class="calculator-card">
+            <div class="form-panel">
+              <h2 id="calculator-title">Payoff Calculator</h2>
+              <p class="section-intro">Compare your current payment with a plan that includes an extra monthly amount.</p>
+
+              <form id="loan-form" novalidate>
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="balance">Loan balance</label>
+                    <input id="balance" name="balance" type="number" min="0" step="0.01" inputmode="decimal" value="30000" required>
+                  </div>
+                  <div class="field">
+                    <label for="interest">Annual interest rate</label>
+                    <input id="interest" name="interest" type="number" min="0" step="0.01" inputmode="decimal" value="6.5" required>
+                  </div>
+                  <div class="field">
+                    <label for="payment">Monthly payment</label>
+                    <input id="payment" name="payment" type="number" min="0" step="0.01" inputmode="decimal" value="350" required>
+                  </div>
+                  <div class="field">
+                    <label for="extra">Extra monthly payment</label>
+                    <input id="extra" name="extra" type="number" min="0" step="0.01" inputmode="decimal" value="50">
+                  </div>
+                  <div class="field">
+                    <label for="term">Optional loan term in years</label>
+                    <input id="term" name="term" type="number" min="0" step="1" inputmode="numeric" value="10">
+                    <small>Used as a reference field; payoff results are based on the payment amounts above.</small>
+                  </div>
+                </div>
+                <button class="button calculate-button" type="submit">Calculate Payoff</button>
+                <p id="error" class="error" role="alert"></p>
+              </form>
+            </div>
+
+            <div class="results-panel" aria-live="polite">
+              <h2>Your Estimate</h2>
+              <p class="section-intro">The results update when you run the calculator.</p>
+              <div class="results-grid">
+                <div class="result-card">
+                  <span class="result-label">Payoff time without extra</span>
+                  <span id="base-time" class="result-value">-</span>
+                </div>
+                <div class="result-card highlight">
+                  <span class="result-label">Payoff time with extra</span>
+                  <span id="extra-time" class="result-value">-</span>
+                </div>
+                <div class="result-card">
+                  <span class="result-label">Interest without extra</span>
+                  <span id="base-interest" class="result-value">-</span>
+                </div>
+                <div class="result-card highlight">
+                  <span class="result-label">Interest with extra</span>
+                  <span id="extra-interest" class="result-value">-</span>
+                </div>
+                <div class="result-card">
+                  <span class="result-label">Total amount paid</span>
+                  <span id="total-paid" class="result-value">-</span>
+                </div>
+                <div class="result-card highlight">
+                  <span class="result-label">Interest saved</span>
+                  <span id="interest-saved" class="result-value">-</span>
+                </div>
+                <div class="result-card highlight">
+                  <span class="result-label">Time saved</span>
+                  <span id="time-saved" class="result-value">-</span>
+                </div>
+              </div>
+              <p class="explanation">These results estimate how long it may take to repay your student loan and how much interest you could save by adding extra money to your monthly payment. Actual payoff amounts can vary based on lender rules, payment timing, fees, deferment, forbearance, or changes to your repayment plan.</p>
+            </div>
+          </div>
+
+          <aside class="ad-slot sidebar-ad" aria-label="Sidebar advertising placeholder">Ad Slot</aside>
+        </section>
+
+        <div class="ad-slot ad-after-results" aria-label="In-content advertising placeholder">Ad Slot</div>
+
+        <section class="content-section" aria-labelledby="guide-title">
+          <h2 id="guide-title">Student Loan Payoff Guide</h2>
+          <p class="section-intro">A few basics can make your payoff estimate easier to understand and easier to act on.</p>
+          <div class="content-grid">
+            <article class="article-block">
+              <h3>How Student Loan Interest Works</h3>
+              <p>Student loan interest is the cost of borrowing money. Most loans accrue interest every day or every month based on the outstanding balance and the interest rate. When you make a payment, part of it usually covers accrued interest first, and the rest reduces the principal balance. The faster you lower the principal, the less interest can build up over time.</p>
+            </article>
+
+            <article class="article-block">
+              <h3>Why Extra Payments Save Money</h3>
+              <p>Extra payments can save money because they reduce the balance sooner than scheduled. A smaller balance means less interest accrues in future months. Even a modest extra payment can shorten the repayment timeline if it is applied consistently and your lender applies the extra amount to principal.</p>
+            </article>
+
+            <article class="article-block">
+              <h3>How to Use This Calculator</h3>
+              <p>Enter your current balance, annual interest rate, monthly payment, and any extra amount you plan to pay each month. The calculator compares your regular payment with your payment plus the extra amount. Review the estimated interest saved and time saved to decide whether the extra payment fits your budget.</p>
+            </article>
+
+            <article class="article-block">
+              <h3>Tips to Pay Off Student Loans Faster</h3>
+              <ul>
+                <li>Pay more than the minimum when your budget allows.</li>
+                <li>Ask your lender to apply extra payments to principal.</li>
+                <li>Consider biweekly payments if they fit your cash flow.</li>
+                <li>Keep an emergency fund so extra payments do not create short-term risk.</li>
+                <li>Compare repayment plans before refinancing or changing federal loan benefits.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <div class="ad-slot ad-large" aria-label="Large advertising placeholder">Ad Slot</div>
+
+        <section class="faq-section" aria-labelledby="faq-title">
+          <h2 id="faq-title">Frequently Asked Questions</h2>
+          <div class="faq-list">
+            <details class="faq-card">
+              <summary>How do I calculate my student loan payoff date?</summary>
+              <p>Use your current balance, interest rate, and monthly payment to estimate how many months it will take to bring the balance to zero. This calculator simulates the payoff month by month.</p>
+            </details>
+            <details class="faq-card">
+              <summary>What happens if I make extra payments?</summary>
+              <p>Extra payments reduce your principal faster. That can lower future interest charges, reduce the total amount paid, and help you become debt-free sooner.</p>
+            </details>
+            <details class="faq-card">
+              <summary>Should I pay off student loans early?</summary>
+              <p>Early payoff can be helpful when your loan rate is high and you already have savings for emergencies. It may be less urgent if you have low-rate loans, valuable federal benefits, or higher-priority financial goals.</p>
+            </details>
+            <details class="faq-card">
+              <summary>How does interest affect my payoff time?</summary>
+              <p>Interest adds cost while the balance remains unpaid. If a larger share of your payment goes to interest, less money reduces principal, and payoff can take longer.</p>
+            </details>
+            <details class="faq-card">
+              <summary>Is refinancing student loans a good idea?</summary>
+              <p>Refinancing may make sense if it lowers your rate or simplifies repayment, but it can also remove federal loan protections. Compare rates, fees, repayment flexibility, and borrower benefits before refinancing.</p>
+            </details>
+            <details class="faq-card">
+              <summary>What if my monthly payment is too low?</summary>
+              <p>If your payment is too low to cover the interest that accrues, your balance will not go down. You may need a higher payment, a different repayment plan, or guidance from your loan servicer.</p>
+            </details>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div class="ad-slot ad-footer" aria-label="Footer advertising placeholder">Ad Slot</div>
+        <div class="footer-copy">
+          <p>This calculator is for educational estimates only and is not financial advice.</p>
+          <p>&copy; <span id="year"></span> Student Loan Payoff Calculator</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById("loan-form");
+    const errorBox = document.getElementById("error");
+    const resultIds = {
+      baseTime: document.getElementById("base-time"),
+      extraTime: document.getElementById("extra-time"),
+      baseInterest: document.getElementById("base-interest"),
+      extraInterest: document.getElementById("extra-interest"),
+      totalPaid: document.getElementById("total-paid"),
+      interestSaved: document.getElementById("interest-saved"),
+      timeSaved: document.getElementById("time-saved")
+    };
+
+    const usd = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0
+    });
+
+    function readNumber(id) {
+      const input = document.getElementById(id);
+      const value = Number(input.value);
+      return Number.isFinite(value) ? value : NaN;
+    }
+
+    function formatMoney(value) {
+      return usd.format(Math.max(0, value));
+    }
+
+    function formatTime(months) {
+      if (months <= 0) return "Paid off now";
+      const years = Math.floor(months / 12);
+      const remainingMonths = months % 12;
+      const parts = [];
+
+      if (years > 0) parts.push(`${years} ${years === 1 ? "year" : "years"}`);
+      if (remainingMonths > 0) parts.push(`${remainingMonths} ${remainingMonths === 1 ? "month" : "months"}`);
+      return parts.join(", ");
+    }
+
+    function simulatePayoff(balance, annualRate, monthlyPayment) {
+      const monthlyRate = annualRate / 100 / 12;
+      let currentBalance = balance;
+      let totalInterest = 0;
+      let totalPaid = 0;
+      let months = 0;
+      const maxMonths = 1200;
+
+      if (currentBalance <= 0) {
+        return { months: 0, totalInterest: 0, totalPaid: 0 };
+      }
+
+      if (monthlyPayment <= 0) {
+        return null;
+      }
+
+      while (currentBalance > 0.005 && months < maxMonths) {
+        const interest = currentBalance * monthlyRate;
+
+        if (monthlyPayment <= interest && currentBalance > 0) {
+          return null;
+        }
+
+        const paymentThisMonth = Math.min(monthlyPayment, currentBalance + interest);
+        totalInterest += interest;
+        totalPaid += paymentThisMonth;
+        currentBalance = currentBalance + interest - paymentThisMonth;
+        months += 1;
+      }
+
+      if (months >= maxMonths) {
+        return null;
+      }
+
+      return { months, totalInterest, totalPaid };
+    }
+
+    function setError(message) {
+      errorBox.textContent = message;
+      errorBox.style.display = "block";
+    }
+
+    function clearError() {
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+
+    function clearResults() {
+      Object.values(resultIds).forEach((node) => {
+        node.textContent = "-";
+      });
+    }
+
+    function calculate() {
+      clearError();
+
+      const balance = readNumber("balance");
+      const interest = readNumber("interest");
+      const payment = readNumber("payment");
+      const extra = readNumber("extra");
+      const term = readNumber("term");
+      const values = [balance, interest, payment, extra, term];
+
+      if (values.some((value) => Number.isNaN(value))) {
+        clearResults();
+        setError("Please enter a valid number in each field.");
+        return;
+      }
+
+      if (values.some((value) => value < 0)) {
+        clearResults();
+        setError("Please enter zero or positive amounts only.");
+        return;
+      }
+
+      const baseResult = simulatePayoff(balance, interest, payment);
+      const extraResult = simulatePayoff(balance, interest, payment + extra);
+
+      if (!baseResult || !extraResult) {
+        clearResults();
+        setError("Your monthly payment is too low to pay down this loan.");
+        return;
+      }
+
+      const interestSaved = baseResult.totalInterest - extraResult.totalInterest;
+      const monthsSaved = baseResult.months - extraResult.months;
+
+      resultIds.baseTime.textContent = formatTime(baseResult.months);
+      resultIds.extraTime.textContent = formatTime(extraResult.months);
+      resultIds.baseInterest.textContent = formatMoney(baseResult.totalInterest);
+      resultIds.extraInterest.textContent = formatMoney(extraResult.totalInterest);
+      resultIds.totalPaid.textContent = formatMoney(extraResult.totalPaid);
+      resultIds.interestSaved.textContent = formatMoney(interestSaved);
+      resultIds.timeSaved.textContent = formatTime(monthsSaved);
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      calculate();
+    });
+
+    document.querySelector(".hero .button").addEventListener("click", () => {
+      window.setTimeout(() => document.getElementById("balance").focus(), 200);
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    calculate();
+  </script>
+</body>
+</html>
